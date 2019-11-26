@@ -1,10 +1,10 @@
 import Foundation
 
 struct Task {
-    enum Status {
-        case notStarted
-        case inProgress
-        case completed
+    enum Status: String {
+        case notStarted = "Not Started"
+        case inProgress = "In Progress"
+        case completed = "Completed"
     }
     
     let name: String
@@ -63,5 +63,29 @@ struct Task {
                  dueDate: dateFormatter.date(from: "04-13-2020")!),
         ]
     }
-
+    
+      
+      static func statusSections() -> [[Task]] {
+            
+        let sortedTasks = allTasks.sorted { $0.status.rawValue > $1.status.rawValue }
+        let uniqueStatuses = Set(allTasks.map {$0.status})
+        var sections = Array(repeating: [Task](), count: uniqueStatuses.count)
+        var currentIndex = 0
+        var currentStatus = sortedTasks.first?.status
+        for task in sortedTasks {
+            if task.status == currentStatus {
+                sections[currentIndex].append(task)
+            } else {
+                currentIndex += 1
+                currentStatus = task.status
+                sections[currentIndex].append(task)
+            }
+            
+        //var taskArray = Array(repeating: [Task], count: task.Status.count)
+        
+        
+        }
+        return sections
+    }
+ 
 }

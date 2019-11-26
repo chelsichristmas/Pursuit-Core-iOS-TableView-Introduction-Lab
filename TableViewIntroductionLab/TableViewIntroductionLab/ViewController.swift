@@ -12,37 +12,47 @@ class ViewController: UIViewController {
 
     
     @IBOutlet weak var tableView: UITableView!
-    
-    private var tasks = [Task]() {
-    
-    didSet {
-    // reload the table view
-    // reloads all the rows of the table view
-    tableView.reloadData()
+    var tasks = [[Task]]() {
+        didSet {
+            tableView.reloadData()
+        }
     }
-    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
         tableView.dataSource = self
+        loadData()
     }
 
+    
+    func loadData() {
+        tasks = Task.statusSections()
+    }
 
 }
 
 extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return tasks.count
+        return tasks[section].count
+    }
+    func numberOfSections(in tableView: UITableView) -> Int {
+        tasks.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "taskCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell (withIdentifier: "taskCell", for: indexPath)
         
         
-        let currentTask = tasks[indexPath.row]
+        let task = tasks[indexPath.section][indexPath.row]
         
-        cell.textLabel?.text = currentTask.name
-        cell.detailTextLabel?.text = currentTask.dueDate.description
+        cell.textLabel?.text = task.name
+        cell.detailTextLabel?.text = task.dueDate.description(with: .current)
         return cell
     }
+    
+   func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+      
+    return tasks[section].first?.status.rawValue
+      }
+    
 }
